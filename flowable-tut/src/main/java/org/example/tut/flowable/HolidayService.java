@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.example.tut.flowable.dto.HolidayRequest;
 import org.example.tut.flowable.dto.ProcessInstanceResponse;
 import org.example.tut.flowable.dto.TaskDetails;
@@ -17,11 +14,14 @@ import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricActivityInstance;
-import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -36,21 +36,15 @@ public class HolidayService {
     ProcessEngine processEngine;
     RepositoryService repositoryService;
 
-    //********************************************************** deployment service methods **********************************************************
+    // *************************** deployment service methods *******************************************************
 
     public void deployProcessDefinition() {
 
-        Deployment deployment =
-                repositoryService
-                        .createDeployment()
-                        .addClasspathResource("holiday-request.bpmn20.xml")
-                        .deploy();
-
+        repositoryService.createDeployment().addClasspathResource("holiday-request.bpmn20.xml").deploy();
 
     }
 
-
-    //********************************************************** process service methods **********************************************************
+    // *************************** process service methods **********************************************************
 
     public ProcessInstanceResponse applyHoliday(HolidayRequest holidayRequest) {
 
@@ -59,16 +53,13 @@ public class HolidayService {
         variables.put("noOfHolidays", holidayRequest.getNoOfHolidays());
         variables.put("description", holidayRequest.getRequestDescription());
 
-        ProcessInstance processInstance =
-                runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(PROCESS_DEFINITION_KEY, variables);
 
         return new ProcessInstanceResponse(processInstance.getId(), processInstance.isEnded());
     }
 
-
     public List<TaskDetails> getManagerTasks() {
-        List<Task> tasks =
-                taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP).list();
+        List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP).list();
         List<TaskDetails> taskDetails = getTaskDetails(tasks);
 
         return taskDetails;
@@ -83,8 +74,7 @@ public class HolidayService {
         return taskDetails;
     }
 
-
-    public void approveHoliday(String taskId,Boolean approved) {
+    public void approveHoliday(String taskId, Boolean approved) {
 
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("approved", approved.booleanValue());
@@ -95,7 +85,6 @@ public class HolidayService {
         taskService.complete(taskId);
     }
 
-
     public List<TaskDetails> getUserTasks() {
 
         List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(EMP_NAME).list();
@@ -104,23 +93,15 @@ public class HolidayService {
         return taskDetails;
     }
 
-
     public void checkProcessHistory(String processId) {
 
         HistoryService historyService = processEngine.getHistoryService();
 
-        List<HistoricActivityInstance> activities =
-                historyService
-                        .createHistoricActivityInstanceQuery()
-                        .processInstanceId(processId)
-                        .finished()
-                        .orderByHistoricActivityInstanceEndTime()
-                        .asc()
-                        .list();
+        List<HistoricActivityInstance> activities = historyService.createHistoricActivityInstanceQuery()
+                .processInstanceId(processId).finished().orderByHistoricActivityInstanceEndTime().asc().list();
 
         for (HistoricActivityInstance activity : activities) {
-            System.out.println(
-                    activity.getActivityId() + " took " + activity.getDurationInMillis() + " milliseconds");
+            System.out.println(activity.getActivityId() + " took " + activity.getDurationInMillis() + " milliseconds");
         }
 
         System.out.println("\n \n \n \n");
