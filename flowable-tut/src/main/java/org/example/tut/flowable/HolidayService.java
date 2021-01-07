@@ -48,7 +48,7 @@ public class HolidayService {
 
     public ProcessInstanceResponse applyHoliday(HolidayRequest holidayRequest) {
 
-        Map<String, Object> variables = new HashMap<String, Object>();
+        Map<String, Object> variables = new HashMap<>();
         variables.put("employee", holidayRequest.getEmpName());
         variables.put("noOfHolidays", holidayRequest.getNoOfHolidays());
         variables.put("description", holidayRequest.getRequestDescription());
@@ -60,9 +60,7 @@ public class HolidayService {
 
     public List<TaskDetails> getManagerTasks() {
         List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup(TASK_CANDIDATE_GROUP).list();
-        List<TaskDetails> taskDetails = getTaskDetails(tasks);
-
-        return taskDetails;
+        return getTaskDetails(tasks);
     }
 
     private List<TaskDetails> getTaskDetails(List<Task> tasks) {
@@ -76,8 +74,8 @@ public class HolidayService {
 
     public void approveHoliday(String taskId, Boolean approved) {
 
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("approved", approved.booleanValue());
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("approved", approved);
         taskService.complete(taskId, variables);
     }
 
@@ -88,9 +86,7 @@ public class HolidayService {
     public List<TaskDetails> getUserTasks() {
 
         List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(EMP_NAME).list();
-        List<TaskDetails> taskDetails = getTaskDetails(tasks);
-
-        return taskDetails;
+        return getTaskDetails(tasks);
     }
 
     public void checkProcessHistory(String processId) {
