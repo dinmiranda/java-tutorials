@@ -27,12 +27,10 @@ public class Exception {
         return new Date(time);
     }
 
-
     public Exception setType(String type) {
         this.type = type;
         return this;
     }
-
 
     public Exception setRequestId(String requestId) {
         this.requestId = requestId;
@@ -48,8 +46,8 @@ public class Exception {
             return false;
         }
         Exception that = (Exception) o;
-        return Objects.equals(getLowerTimeBound(), that.getLowerTimeBound()) &&
-                Objects.equals(getType(), that.getType());
+        return Objects.equals(getLowerTimeBound(), that.getLowerTimeBound())
+                && Objects.equals(getType(), that.getType());
     }
 
     @Override
