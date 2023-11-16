@@ -12,12 +12,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.3.7.RELEASE</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-spring-boot-starter</artifactId>
-            <version>6.6.0</version>
+            <version>6.7.0</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
